@@ -18,29 +18,29 @@ class Dict(dict):
     >>> d1['x'] = 100
     >>> d1.x
     100
-    >>>d1.y=200
-    >>>d1['y']
+    >>> d1.y=200
+    >>> d1['y']
     200
-    >>>d2=Dict(a=1,b=2,c='3')
-    >>>d2.c
+    >>> d2=Dict(a=1,b=2,c='3')
+    >>> d2.c
     '3'
-    >>>d2['empyt']
+    >>> d2['empyt']
     Traceback (most recent call last):
         ...
     KeyError:'empyt'
-    >>>d2.empty
+    >>> d2.empty
     Traceback (most recent call last):
         ...
     AttributeError:'Dict' object has no attribute 'empty'
-    >>>d3=Dict(('a','b','c'),(1,2,3))
-    >>>d3.a
+    >>> d3=Dict(('a','b','c'),(1,2,3))
+    >>> d3.a
     1
-    >>>d3.b
+    >>> d3.b
     2
-    >>>d3.c
+    >>> d3.c
     3
     '''
-    def __init(self,name=(),value=(),**kw):
+    def __init__(self,names=(),values=(),**kw):
         super(Dict,self).__init__(**kw)
         for k,v in zip(names,values):
             self[k] = v
@@ -318,9 +318,10 @@ def _select(sql,first,*args):
         if cursor.description:
             names=[x[0] for x in cursor.description]
         if first:
-            values = cursorlfetchone()
+            values = cursor.fetchone()
             if not values:
                 return None
+	    print names,values
             return Dict(names,values)
         return [Dict(names,x) for x in cursor.fetchall()]
     finally:
@@ -402,16 +403,28 @@ def _update(sql,*args):
 
 def insert(table,**kw):
     cols,args = zip(*kw.iteritems())
-    sql = 'insert into `%s` (%s) valus (%s)' % (table,','.join(['`%s    ' % col for col in cols]), ','.join(['?' for i in range(len(cols))]))
+    sql = 'insert into `%s` (%s) values (%s)' % (table,','.join(['`%s`' % col for col in cols]), ','.join(['?' for i in range(len(cols))]))
     return _update(sql,*args)
 
 def update(sql,*args):
     return _update(sql,*args)
 
+create_engine('root','1213','test')
 if __name__=='__main__':
     logging.basicConfig(level=logging.DEBUG)
-    create_engine('root','19931213','test')
-    update('drop table if exists user')
-    update('create table user (id int primary key,name text,email text,paswd text,last_modified real)')
+    create_engine('root','1213','test')
+    #update('drop table if exists user')
+    #update('create table user (id int primary key,name text,email text,passwd text,last_modified real)')
     #import doctest
     #doctest.testmod()
+    #insert user
+    #params = {'id':'0004','name':'weijia','email':'15056224623@qq.com','passwd':'123','last_modified':'0'}
+    #insert('user',**params)
+    #select
+    #sql = 'select count(*) from user'
+    #count = select_int(sql)
+    #print count
+    sql = 'select name,passwd from user'
+    res = select(sql)
+    print res
+
