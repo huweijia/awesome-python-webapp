@@ -409,7 +409,6 @@ def insert(table,**kw):
 def update(sql,*args):
     return _update(sql,*args)
 
-create_engine('root','1213','test')
 if __name__=='__main__':
     logging.basicConfig(level=logging.DEBUG)
     create_engine('root','1213','test')

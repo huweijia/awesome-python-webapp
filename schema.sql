@@ -25,7 +25,7 @@ create table blogs (
 	`user_name` varchar(50) not null,
 	`user_image` varchar(500) not null,
 	`name` varchar(50) not null,
-	`summary` vachar(200) not null,
+	`summary` varchar(200) not null,
 	`content` mediumtext not null,
 	`created_at` real not null,
 	key `idx_created_at` (`created_at`),
@@ -43,6 +43,15 @@ create table comments (
 	primary key(`id`)
 ) engine=innodb default charset=utf8;
 
-insert into users(`id`,`email`,`password`,`admin`,`name`,`created_at`) 
-values('001','admin@example.com','12345',1,'Adminstrator',12345);
+insert into users values('001','test1@example.com','password',0,'name1','test.jpg',1479286841);
+insert into users values('002','test2@example.com','password',0,'name2','test.jpg',1479286841);
+insert into users values('003','test3@example.com','password',0,'name3','test.jpg',1479286841);
+insert into users values('004','test4@example.com','password',0,'name4','test.jpg',1479286841);
+insert into users values('005','test5@example.com','password',0,'name5','test.jpg',1479286841);
+insert into users values('006','test6@example.com','password',0,'name6','test.jpg',1479286841);
+insert into users values('007','test7@example.com','password',0,'name7','test.jpg',1479286841);
+insert into users values('008','test8@example.com','password',0,'name8','test.jpg',1479286841);
+insert into users values('009','test9@example.com','password',0,'name9','test.jpg',1479286841);
+insert into users values('010','test10@example.com','password',0,'name10','test.jpg',1479286841);
+
 
