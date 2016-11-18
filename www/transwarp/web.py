@@ -451,7 +451,7 @@ def _static_file_generator(fpath):
 	BLOCK_SIZE = 8192
 	with open(fpath,'rb') as f:
 		block = f.read(BLOCK_SIZE)
-		with block:
+		while block:
 			yield block
 			block = f.read(BLOCK_SIZE)
 
@@ -472,7 +472,7 @@ class StaticFieldRoute(object):
 		if not os.path.isfile(fpath):
 			raise notfound()
 		ftext = os.path.splitext(fpath)[1]
-		ctx.response.content_type = mimetypes.types_map.get(fext.lower(),'application/octet-stream')
+		ctx.response.content_type = mimetypes.types_map.get(ftext.lower(),'application/octet-stream')
 		return _static_file_generator(fpath)
 
 def favicon_handler():
@@ -675,7 +675,7 @@ class Response(object):
 		key = name.upper()
 		if not key in _RESPONSE_HEADER_DICT:
 			key = name
-		slef._headers[key] = _to_str(value)
+		self._headers[key] = _to_str(value)
 
 	@property
 	def content_type(self):
