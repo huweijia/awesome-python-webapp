@@ -7,7 +7,7 @@ A simple, linghweight, WSGI-compatible web framework.
 
 __autho__ = 'weijia'
 
-import types,os,re,cgi,sys,time,datetime,functools,mimetypes,threading,logging,urllib,traceback
+import types,os,re,cgi,sys,time,datetime,functools,mimetypes,threading,logging,urllib,traceback,pdb
 
 try:
     from cStringIO import StringIO
@@ -263,7 +263,7 @@ class RedirectError(HttpError):
         '''
         Init an HttpError with response code.
         '''
-        super(RedirectError,self).__innit__(code)
+        super(RedirectError,self).__init__(code)
         self.location = location
 
     def __str__(self):
@@ -503,7 +503,7 @@ class Request(object):
 			if item.filename:
 				return MultipartFile(item)
 			return _to_unicode(item.value)
-		fs = cgi.FiledStorage(fp=self._environ['wsgi.input'],environ=self._environ,keep_blank_values=True)
+		fs = cgi.FieldStorage(fp=self._environ['wsgi.input'],environ=self._environ,keep_blank_values=True)
 		inputs = dict()
 		for key in fs:
 			inputs[key] = _convert(fs[key])
@@ -570,8 +570,8 @@ class Request(object):
 	def input(self,**kw):
 		copy = Dict(**kw)
 		raw = self._get_raw_input()
-		for k,v in raw_iteritems():
-			copy[ky] = v[0] if isinstance(v,list) else v
+		for k,v in raw.iteritems():
+			copy[k] = v[0] if isinstance(v,list) else v
 		return copy
 
 	def get_body(self):
@@ -709,7 +709,7 @@ class Response(object):
 			if isinstance(expires,(datetime.date,datetime.datetime)):
 				L.append('Expires=%s' % expires.astimezone(UTC_0).strftime('%a, %d-%b-%Y %H:%M:%S GMT'))
 		elif isinstance(max_age,(int,long)):
-			L.append('Max-Age=%d' % max-age)
+			L.append('Max-Age=%d' % max_age)
 		L.append('Path=%s' % path)
 		if domain:
 			L.append('Domain=%s' % domain)
@@ -922,6 +922,7 @@ class WSGIApplication(object):
 			path_info = ctx.request.path_info
 			if request_method == 'GET':
 				fn = self._get_static.get(path_info,None)
+                                logging.info('fn: %s' % fn)
 				if fn:
 					return fn()
 				for fn in self._get_dynamic:
@@ -939,6 +940,7 @@ class WSGIApplication(object):
 						return fn(*args)
 				raise notfound()
 			raise badrequest()
+                        
 
 		fn_exec = _build_interceptor_chain(fn_route,*self._interceptors)
 
@@ -957,6 +959,7 @@ class WSGIApplication(object):
 				start_response(response.status,response.headers)
 				return r
 			except RedirectError,e:
+                                logging.info("error")
 				response.set_header('Location',e.location)
 				start_response(e.status,response.headers)
 				return []
